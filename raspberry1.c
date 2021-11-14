@@ -34,9 +34,14 @@ static int __init ebbgpio_init(void){
    printk(KERN_INFO "GPIO_TEST: Initializing the GPIO_TEST LKM\n");
    
    if (!gpio_is_valid(gpioLED1)){
-      printk(KERN_INFO "GPIO_TEST: invalid LED GPIO\n");
+      printk(KERN_INFO "GPIO_TEST: invalid LED1 GPIO\n");
       return -ENODEV;
    }
+if (!gpio_is_valid(gpioLED2)){
+      printk(KERN_INFO "GPIO_TEST: invalid LED2 GPIO\n");
+      return -ENODEV;
+   }
+
    // inicializar led 1   
    gpio_request(gpioLED1, "sysfs");         
    gpio_direction_output(gpioLED1, ledOn);  
@@ -113,30 +118,30 @@ static int __init ebbgpio_init(void){
 
 
 static irq_handler_t ebbgpio_irq_handler(unsigned int irq, void *dev_id, struct pt_regs *regs){
- if (irqNumber1==irq){
-   ledOn = true;                        
-   gpio_set_value(gpioLED1, ledOn);   
+ if ( gpio_get_value(gpioButton1)==1){
+  ledOn = true;
+  gpio_set_value(gpioLED1,ledOn);
    printk(KERN_INFO "GPIO_TEST: Interrupt! (button1 state is %d)\n", gpio_get_value(gpioButton1));
-   numberPresses++;                           
-   return (irq_handler_t) IRQ_HANDLED;     
-}
-  if (irqNumber2==irq){
+   numberPresses++;
+ }
+
+  if ( gpio_get_value(gpioButton2)==1){
   ledOn = false;
   gpio_set_value(gpioLED1,ledOn); 
    printk(KERN_INFO "GPIO_TEST: Interrupt! (button2 state is %d)\n", gpio_get_value(gpioButton2));
-   numberPresses++;                        
+   numberPresses++;
  }    
-  if (irqNumber3==irq){
+  if ( gpio_get_value(gpioButton3)==1){
   ledOn = true;
   gpio_set_value(gpioLED2,ledOn); 
-   printk(KERN_INFO "GPIO_TEST: Interrupt! (button3 state is %d)\n", gpio_get_value(gpioButton3));
-   numberPresses++;                        
+  printk(KERN_INFO "GPIO_TEST: Interrupt! (button3 state is %d)\n", gpio_get_value(gpioButton3));
+  numberPresses++;
  }    
-  if (irqNumber4==irq){
+  if ( gpio_get_value(gpioButton4)==1){
   ledOn = false;
   gpio_set_value(gpioLED2,ledOn); 
-   printk(KERN_INFO "GPIO_TEST: Interrupt! (button4 state is %d)\n", gpio_get_value(gpioButton4));
-   numberPresses++;                        
+  printk(KERN_INFO "GPIO_TEST: Interrupt! (button4 state is %d)\n", gpio_get_value(gpioButton4));
+  numberPresses++;
  }    
    return (irq_handler_t) IRQ_HANDLED;     
 }
