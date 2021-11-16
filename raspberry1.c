@@ -24,7 +24,11 @@ static unsigned int irqNumber2;
 static unsigned int irqNumber3; 
 static unsigned int irqNumber4; 
 
-static unsigned int numberPresses = 0;
+static unsigned int numberPressesbutton1 = 0;
+static unsigned int numberPressesbutton2 = 0;
+static unsigned int numberPressesbutton3 = 0;
+static unsigned int numberPressesbutton4 = 0;
+
 static bool ledOn = 0;        
 
 static irq_handler_t  ebbgpio_irq_handler(unsigned int irq, void *dev_id, struct pt_regs *regs);
@@ -122,26 +126,26 @@ static irq_handler_t ebbgpio_irq_handler(unsigned int irq, void *dev_id, struct 
   ledOn = true;
   gpio_set_value(gpioLED1,ledOn);
    printk(KERN_INFO "GPIO_TEST: Interrupt! (button1 state is %d)\n", gpio_get_value(gpioButton1));
-   numberPresses++;
+   numberPressesbutton1++;
  }
 
   if ( gpio_get_value(gpioButton2)==1){
   ledOn = false;
   gpio_set_value(gpioLED1,ledOn); 
    printk(KERN_INFO "GPIO_TEST: Interrupt! (button2 state is %d)\n", gpio_get_value(gpioButton2));
-   numberPresses++;
+   numberPressesbutton2++;
  }    
   if ( gpio_get_value(gpioButton3)==1){
   ledOn = true;
   gpio_set_value(gpioLED2,ledOn); 
   printk(KERN_INFO "GPIO_TEST: Interrupt! (button3 state is %d)\n", gpio_get_value(gpioButton3));
-  numberPresses++;
+  numberPressesbutton3++;
  }    
   if ( gpio_get_value(gpioButton4)==1){
   ledOn = false;
   gpio_set_value(gpioLED2,ledOn); 
   printk(KERN_INFO "GPIO_TEST: Interrupt! (button4 state is %d)\n", gpio_get_value(gpioButton4));
-  numberPresses++;
+  numberPressesbutton4++;
  }    
    return (irq_handler_t) IRQ_HANDLED;     
 }
@@ -149,7 +153,11 @@ static irq_handler_t ebbgpio_irq_handler(unsigned int irq, void *dev_id, struct 
 
 static void __exit ebbgpio_exit(void){
    printk(KERN_INFO "GPIO_TEST: The button state is currently: %d\n", gpio_get_value(gpioButton1));
-   printk(KERN_INFO "GPIO_TEST: The button was pressed %d times\n", numberPresses);
+   printk(KERN_INFO "GPIO_TEST: The button1 was pressed %d times\n", numberPressesbutton1);
+   printk(KERN_INFO "GPIO_TEST: The button2 was pressed %d times\n", numberPressesbutton2);
+   printk(KERN_INFO "GPIO_TEST: The button3 was pressed %d times\n", numberPressesbutton3);
+   printk(KERN_INFO "GPIO_TEST: The button4 was pressed %d times\n", numberPressesbutton4);
+
    gpio_set_value(gpioLED1, 0);             
    gpio_unexport(gpioLED1);                  
    gpio_set_value(gpioLED2, 0);             
